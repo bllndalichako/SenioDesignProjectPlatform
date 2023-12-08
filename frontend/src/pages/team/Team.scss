@@ -1,0 +1,40 @@
+@import "../../styles/variables.scss";
+
+.project {
+  h1 {
+    margin-bottom: 20px;
+  }
+
+  .details {
+    font-size: 18px;
+
+    .item {
+      margin: 30px 0px;
+
+      .itemTitle {
+        font-weight: 600;
+        margin-right: 10px;
+        text-transform: capitalize;
+      }
+    }
+  }
+
+  .personnel {
+    .personnelList {
+      display: grid;
+      gap: 20px;
+      grid-auto-flow: dense;
+      grid-template-columns: repeat(auto-fit, minmax(180px, auto));
+      grid-auto-rows: minmax(180px, auto);
+
+      .personnelListItem {
+        padding: 10px;
+        border-radius: 10px;
+
+        &:hover {
+          background-color: $soft-bg;
+        }
+      }
+    }
+  }
+}
