@@ -13,9 +13,9 @@ const registerUser = asyncHandler(async (req, res) => {
     const { firstName, lastName, email, password, accessType } = req.body;
 
     const verificationCode = Math.floor(Math.random() * 1000000);
-  
+
     const alreadyRegistered = await Register.findOne({ email: email });
-  
+
     if (alreadyRegistered) {
       alreadyRegistered.verification = verificationCode;
       await alreadyRegistered.save();
@@ -28,7 +28,7 @@ const registerUser = asyncHandler(async (req, res) => {
       );
       await newRegistration.save();
     }
-  
+
     const transporter = nodemailer.createTransport(
       {
         service: 'Gmail',
@@ -36,17 +36,17 @@ const registerUser = asyncHandler(async (req, res) => {
           user: 'seniordesignprojectplatform@gmail.com',
           pass: process.env.GMAIL_PASSWORD
         }
-  
+
       }
     );
-  
+
     const mailOptions = {
       from: 'seniordesignprojectplatform@gmail.com',
       to: email,
       subject: 'Verification Code for Senior Design Project Platform',
       text: `Your verification code is ${verificationCode}`,
     };
-  
+
     transporter.sendMail(mailOptions, (error, info) => {
       // console.log("In transporter.sendMail")
       if (error) {
@@ -65,29 +65,43 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const verifyRegistration = asyncHandler(async (req, res) => {
 
-  const { firstName, lastName, email, verificationCode, password, accessType } = req.body;
+  try {
 
-  const registeredUser = await Register.findOne({ email: email });
+    const { firstName, lastName, email, password, accessType } = req.body;
+    const { verificationCode } = req.params;
 
-  if (registeredUser) {
-    if (registeredUser.verification === verificationCode) {
+    console.log(firstName, lastName, email, password, accessType)
 
-      // Create user.
-      const user = accessType === "senior" ? await Senior.create({ firstName, lastName, email, password }) : await Advisor.create({ firstName, lastName, email, password });
+    const registeredUser = await Register.findOne({ email: email });
 
-      // // Confirm user was created, and return created user.
-      // if (user) {
-      //   generateToken(res, user);
+    if (registeredUser) {
+      if (registeredUser.verification === verificationCode) {
 
-      //   res.status(201).json(user).send({ message: "User successfully registered." });
-      // } else {
-      //   res.status(400).send({ message: "User was not registered." });
-      //   // throw new Error('User not created. Invalid user data.');
-      // }
-    } else {
-      res.status(400).send({ message: "User verification failed." });
+        // Create user.
+        const user = accessType === "student" ? await Senior.create({ firstName, lastName, email, password }) : await Advisor.create({ firstName, lastName, email, password });
+
+        console.log(user);
+        res.status(200).send({ message: "User successfully registered." });
+        // // Confirm user was created, and return created user.
+        // if (user) {
+        //   generateToken(res, user);
+
+        //   res.status(201).json(user).send({ message: "User successfully registered." });
+        // } else {
+        //   res.status(400).send({ message: "User was not registered." });
+        //   // throw new Error('User not created. Invalid user data.');
+        // }
+      } else {
+        res.status(400).send({ message: "User verification failed." });
+        return;
+      }
+    }
+    else {
+      res.status(400).send({ message: "User not registered." });
       return;
     }
+  } catch (error) {
+    console.log(error.message);
   }
 });
 
@@ -98,7 +112,7 @@ const authUser = asyncHandler(async (req, res) => {
   const { email, password, accessType } = req.body;
 
   // Check if user exists.
-  const user = accessType === "senior" ? await Senior.findOne({ email }) : await Advisor.findOne({ email });
+  const user = accessType === "student" ? await Senior.findOne({ email }) : await Advisor.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
     generateToken(res, user);

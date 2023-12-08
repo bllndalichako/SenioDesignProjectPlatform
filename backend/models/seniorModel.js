@@ -22,7 +22,7 @@ const seniorSchema = mongoose.Schema(
     },
     accessType: {
       type: String,
-      default: 'senior',
+      default: 'student',
     },
     isProjectLead: {
       type: Boolean,

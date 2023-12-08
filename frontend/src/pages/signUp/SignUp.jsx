@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Verification from '../Verification/Verification';
 
 const accessTypes = [
   {
@@ -29,6 +30,8 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [accessType, setAccessType] = useState('student');
+  const [showVerificationScreen, setShowVerificationScreen] = useState(false);
+
   const navigate = useNavigate();
   const validateEmailAddress = () => {
     const uflEmailRegex = new RegExp("^[a-zA-Z0-9._%+-]+@ufl.edu$");
@@ -64,7 +67,7 @@ const SignUp = () => {
     try {
       console.log(firstName, lastName, email, password, confirmPassword, accessType);
       if (validateEmailAddress() && passwordMatch() && nameValidation()) {
-        const registerRes = axios.post('http://localhost:5555/api/register', {
+        const registerRes = await axios.post('http://localhost:5555/api/register', {
           firstName,
           lastName,
           email,
@@ -73,7 +76,8 @@ const SignUp = () => {
         });
         console.log(registerRes);
         toast.success('Check your mail inbox for a verification code.');
-        navigate('/verify');
+        setShowVerificationScreen(true);
+        // navigate('/verify');
       }
     } catch (error) {
       console.log(error.message);
@@ -82,128 +86,130 @@ const SignUp = () => {
 
   return (
     <div className="main">
-      <Container component="main" maxWidth="sm" sx={{ bgcolor: "white" }}>
-        <CssBaseline />
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            p: 5,
-            borderRadius: 2,
-            minWidth: 550,
-          }}
-        >
-          <Typography component="h1" variant="h4" sx={{ color: '#2a3447' }}>
-            Sign Up
-          </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2} >
-              <Grid item xs={12} sm={6} >
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                  onChange={(e) => setFirstName(e.target.value)}
-                  sx={{ bgcolor: 'white' }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                  sx={{ bgcolor: 'white' }}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  helperText="Please enter your UFL email address"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Enter Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Confirm Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
+      {showVerificationScreen ?
+        <Verification fName={firstName} lName={lastName} uflEmail={email} pass={password} role={accessType} /> :
+        <Container component="main" maxWidth="sm" sx={{ bgcolor: "white" }}>
+          <CssBaseline />
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              p: 5,
+              borderRadius: 2,
+              minWidth: 550,
+            }}
+          >
+            <Typography component="h1" variant="h4" sx={{ color: '#2a3447' }}>
+              Sign Up
+            </Typography>
+            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+              <Grid container spacing={2} >
+                <Grid item xs={12} sm={6} >
+                  <TextField
+                    autoComplete="given-name"
+                    name="firstName"
+                    required
+                    fullWidth
+                    id="firstName"
+                    label="First Name"
+                    autoFocus
+                    onChange={(e) => setFirstName(e.target.value)}
+                    sx={{ bgcolor: 'white' }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="lastName"
+                    label="Last Name"
+                    name="lastName"
+                    autoComplete="family-name"
+                    sx={{ bgcolor: 'white' }}
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                    helperText="Please enter your UFL email address"
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="password"
+                    label="Enter Password"
+                    type="password"
+                    id="password"
+                    autoComplete="new-password"
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="password"
+                    label="Confirm Password"
+                    type="password"
+                    id="password"
+                    autoComplete="new-password"
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" >
+                  <TextField
+                    id="outlined-select-currency-native"
+                    select
+                    label="Role"
+                    defaultValue="student"
+                    SelectProps={{
+                      native: true,
+                    }}
+                    fullWidth
+                    required
+                    onChange={(e) => setAccessType(e.target.value)}
+                  >
+                    {accessTypes.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </TextField>
+                </Grid>
+
               </Grid>
               <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" >
-                <TextField
-                  id="outlined-select-currency-native"
-                  select
-                  label="Role"
-                  defaultValue="student"
-                  SelectProps={{
-                    native: true,
-                  }}
-                  fullWidth
-                  required
-                  onChange={(e) => setAccessType(e.target.value)}
+                <Button
+                  type="submit"
+                  variant="contained"
+                  size='large'
+                  display='flex'
+                  justifyContent="center" alignItems="center"
+                  sx={{ mt: 3, mb: 2, bgcolor: '#2a3447', color: 'white' }}
                 >
-                  {accessTypes.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
+                  Sign Up
+                </Button>
               </Grid>
-
-            </Grid>
-            <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" >
-              <Button
-                type="submit"
-                variant="contained"
-                size='large'
-                display='flex'
-                justifyContent="center" alignItems="center"
-                sx={{ mt: 3, mb: 2, bgcolor: '#2a3447', color: 'white' }}
-              >
-                Sign Up
-              </Button>
-            </Grid>
-            <Grid container justifyContent="flex-end" >
-              <Grid item>
-                <Link href="login" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
-                  Already have an account? Sign in
-                </Link>
+              <Grid container justifyContent="flex-end" >
+                <Grid item>
+                  <Link href="login" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
+                    Already have an account? Sign in
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
+            </Box>
           </Box>
-        </Box>
-      </Container>
+        </Container>}
     </div>
   );
 }

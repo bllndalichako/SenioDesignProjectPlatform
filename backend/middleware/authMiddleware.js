@@ -14,7 +14,7 @@ const protectRoute = asyncHandler(async (req, res, next) => {
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
       // Get user from token. Removing password from user object.
-      const user = decodedToken.user.accessType === "senior" ? await Senior.findById(decodedToken.user._id).select('-password') : await Advisor.findById(decodedToken.user._id).select('-password');
+      const user = decodedToken.user.accessType === "student" ? await Senior.findById(decodedToken.user._id).select('-password') : await Advisor.findById(decodedToken.user._id).select('-password');
 
       // If user exists, set req.user to user.
       if (user) {

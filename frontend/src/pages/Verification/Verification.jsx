@@ -1,20 +1,41 @@
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-const Verification = () => {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+const Verification = ({ fName, lName, uflEmail, pass, role }) => {
+  const navigate = useNavigate();
+  const [verificationCode, setVerificationCode] = useState('');
+
+  const handleSubmit = async (event) => {
+    console.log("In handleSubmit");
+    try {
+      event.preventDefault();
+      console.log(uflEmail, role);
+      const verificationRes = await axios.post(`http://localhost:5555/api/register/verify/${verificationCode}`, {
+        firstName: fName,
+        lastName: lName,
+        email: uflEmail,
+        password: pass,
+        accessType: role,
+      });
+
+      console.log(verificationRes);
+      if (verificationRes.status === 200) {
+        toast.success('Registration verified.');
+        navigate('/');
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -40,10 +61,11 @@ const Verification = () => {
                 <TextField
                   required
                   fullWidth
-                  id="email"
+                  id="code"
                   label="Verification Code"
-                  name="email"
-                  autoComplete="email"
+                  name="code"
+                  autoComplete="code"
+                  onChange={(e) => setVerificationCode(e.target.value)}
                 />
               </Grid>
             </Grid>

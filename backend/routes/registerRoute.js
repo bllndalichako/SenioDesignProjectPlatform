@@ -7,7 +7,7 @@ const router = express.Router();
 // Registers a new user.
 router.post('/', registerUser);
 
-router.post('/verify', verifyRegistration)
+router.post('/verify/:verificationCode', verifyRegistration)
 
 // Authenticates a new user.
 router.post('/auth', authUser);
