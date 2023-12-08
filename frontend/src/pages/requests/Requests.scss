@@ -1,0 +1,38 @@
+@import "../../styles/variables.scss";
+
+.requests {
+  h1 {
+    margin-bottom: 20px;
+  }
+
+  .requestsList {
+    display: grid;
+    gap: 20px;
+    grid-auto-flow: dense;
+    grid-template-columns: repeat(5, 1fr);
+
+    .requestListItem {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 10px;
+
+      &:hover {
+        background-color: $soft-bg;
+      }
+
+      .response {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+
+        .icon {
+          width: 30px;
+          height: 30px;
+        }
+      }
+    }
+  }
+}
