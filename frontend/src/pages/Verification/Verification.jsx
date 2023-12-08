@@ -7,7 +7,7 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 
-const ResetPassword = () => {
+const Verification = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -32,7 +32,7 @@ const ResetPassword = () => {
           }}
         >
           <Typography component="h1" variant="h4" sx={{ color: '#2a3447' }}>
-            Reset Password
+            Enter Verification Code
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, minWidth: 400 }}>
             <Grid container spacing={2}>
@@ -41,7 +41,7 @@ const ResetPassword = () => {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Verification Code"
                   name="email"
                   autoComplete="email"
                 />
@@ -56,7 +56,7 @@ const ResetPassword = () => {
                 justifyContent="center" alignItems="center"
                 sx={{ mt: 3, mb: 2, bgcolor: '#2a3447', color: 'white' }}
               >
-                Reset Password
+                Verify
               </Button>
             </Grid>
           </Box>
@@ -66,4 +66,4 @@ const ResetPassword = () => {
   );
 }
 
-export default ResetPassword;
+export default Verification;
