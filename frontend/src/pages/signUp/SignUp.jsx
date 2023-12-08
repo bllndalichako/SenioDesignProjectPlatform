@@ -6,26 +6,79 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const accessTypes = [
   {
-    value: 'Advisor',
-    label: 'Advisor',
+    value: 'senior',
+    label: 'Student',
   },
   {
-    value: 'Student',
-    label: 'Student',
+    value: 'advisor',
+    label: 'Advisor',
   },
 ];
 
+const navigate = useNavigate();
 const SignUp = () => {
-  const handleSubmit = (event) => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [accessType, setAccessType] = useState('student');
+
+  const validateEmailAddress = () => {
+    const uflEmailRegex = new RegExp("^[a-zA-Z0-9._%+-]+@ufl.edu$");
+
+    if (!uflEmailRegex.test(email)) {
+      toast.error('Must Register With Valid UFL Email');
+      return false;
+    }
+    return true;
+  }
+
+  const passwordMatch = () => {
+    if (password !== '' && password !== confirmPassword) {
+      toast.error('Passwords Do Not Match');
+      return false;
+    } else if (password === '' || confirmPassword === '') {
+      toast.error('Please Enter Password');
+      return false;
+    }
+    return true;
+  }
+
+  const nameValidation = () => {
+    if (firstName === '' || lastName === '') {
+      toast.error('Please Enter Your First and Last Name');
+      return false;
+    }
+    return true;
+  }
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    try {
+      console.log(firstName, lastName, email, password, confirmPassword, accessType);
+      if (validateEmailAddress() && passwordMatch() && nameValidation()) {
+        const registerRes = axios.post('http://localhost:5555/api/register', {
+          firstName,
+          lastName,
+          email,
+          password,
+          accessType,
+        });
+        console.log(registerRes);
+        toast.success('Check your mail inbox for a verification code.');
+        navigate('/verify');
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -56,6 +109,7 @@ const SignUp = () => {
                   id="firstName"
                   label="First Name"
                   autoFocus
+                  onChange={(e) => setFirstName(e.target.value)}
                   sx={{ bgcolor: 'white' }}
                 />
               </Grid>
@@ -68,6 +122,7 @@ const SignUp = () => {
                   name="lastName"
                   autoComplete="family-name"
                   sx={{ bgcolor: 'white' }}
+                  onChange={(e) => setLastName(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -79,6 +134,7 @@ const SignUp = () => {
                   name="email"
                   autoComplete="email"
                   helperText="Please enter your UFL email address"
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -90,6 +146,7 @@ const SignUp = () => {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -101,6 +158,7 @@ const SignUp = () => {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" >
@@ -108,12 +166,13 @@ const SignUp = () => {
                   id="outlined-select-currency-native"
                   select
                   label="Role"
-                  defaultValue="Student"
+                  defaultValue="student"
                   SelectProps={{
                     native: true,
                   }}
                   fullWidth
                   required
+                  onChange={(e) => setAccessType(e.target.value)}
                 >
                   {accessTypes.map((option) => (
                     <option key={option.value} value={option.value}>

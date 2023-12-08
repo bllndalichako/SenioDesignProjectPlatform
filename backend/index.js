@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
   return res.status(234).send('Connected to server and displaying root route.');
 });
 
-app.use('/users', registerRoute);
+app.use('/api/register', registerRoute);
 
 connectDB();
 

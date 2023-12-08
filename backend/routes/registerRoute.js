@@ -1,11 +1,13 @@
 import express from 'express';
-import { authUser, registerUser, logoutUser, getUserProfile } from '../controllers/userController.js';
+import { authUser, registerUser, logoutUser, getUserProfile, verifyRegistration } from '../controllers/userController.js';
 import { protectRoute } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 // Registers a new user.
 router.post('/', registerUser);
+
+router.post('/verify', verifyRegistration)
 
 // Authenticates a new user.
 router.post('/auth', authUser);
