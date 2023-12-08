@@ -18,7 +18,7 @@ const accessTypes = [
   },
 ];
 
-const Login = () => {
+const ResetPassword = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -43,11 +43,11 @@ const Login = () => {
           }}
         >
           <Typography component="h1" variant="h4" sx={{ color: '#2a3447' }}>
-            Sign In
+            Reset Password
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2} >
-              <Grid item xs={12}>
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, minWidth: 400 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} >
                 <TextField
                   required
                   fullWidth
@@ -55,17 +55,6 @@ const Login = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
                 />
               </Grid>
             </Grid>
@@ -78,24 +67,9 @@ const Login = () => {
                 justifyContent="center" alignItems="center"
                 sx={{ mt: 3, mb: 2, bgcolor: '#2a3447', color: 'white' }}
               >
-                Sign In
+                Reset Password
               </Button>
             </Grid>
-            <Grid container justifyContent="flex-end" >
-              <Grid item>
-                <Link href="register" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
-                  Don't have an account? Sign Up
-                </Link>
-              </Grid>
-            </Grid>
-            <Grid container justifyContent="flex-end" >
-              <Grid item>
-                <Link href="reset-password" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
-                 Forgot Password? Reset Password
-                </Link>
-              </Grid>
-            </Grid>
-
           </Box>
         </Box>
       </Container>
@@ -103,4 +77,4 @@ const Login = () => {
   );
 }
 
-export default Login;
+export default ResetPassword;
