@@ -22,7 +22,6 @@ const accessTypes = [
   },
 ];
 
-const navigate = useNavigate();
 const SignUp = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -30,7 +29,7 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [accessType, setAccessType] = useState('student');
-
+  const navigate = useNavigate();
   const validateEmailAddress = () => {
     const uflEmailRegex = new RegExp("^[a-zA-Z0-9._%+-]+@ufl.edu$");
 

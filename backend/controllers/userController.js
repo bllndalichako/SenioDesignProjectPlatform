@@ -48,6 +48,7 @@ const registerUser = asyncHandler(async (req, res) => {
     };
   
     transporter.sendMail(mailOptions, (error, info) => {
+      // console.log("In transporter.sendMail")
       if (error) {
         console.error(error);
         res.status(500).send('Failed to send verification email')
