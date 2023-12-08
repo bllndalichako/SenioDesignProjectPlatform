@@ -14,6 +14,7 @@ import Menu from "./components/menu/Menu";
 import Profile from "./components/profile/Profile";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import Verification from "./pages/Verification/Verification";
+import ProfileSetUp from "./pages/ProfileSetUp/ProfileSetUp";
 
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import React from "react";
@@ -90,6 +91,10 @@ function App() {
     {
       path: "/verify",
       element: <Verification />,
+    },
+    {
+      path: "/profile-setup",
+      element: <ProfileSetUp />,
     },
   ]);
 
