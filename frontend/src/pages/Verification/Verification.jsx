@@ -31,7 +31,7 @@ const Verification = ({ fName, lName, uflEmail, pass, role }) => {
       console.log(verificationRes);
       if (verificationRes.status === 200) {
         toast.success('Registration verified.');
-        navigate('/');
+        navigate('/profile-setup');
       }
     } catch (error) {
       console.log(error.message);

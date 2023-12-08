@@ -14,7 +14,7 @@ import { useState } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 
-const skills = [
+const options = [
   'JavaScript',
   'TypeScript',
   'C++',
@@ -54,7 +54,9 @@ const MenuProps = {
 };
 
 const ProfileSetUp = () => {
-  const [ideasCount, setIdeasCount] = useState(1);
+  const [projectIdea, setProjectIdea] = useState('');
+  const [skills, setSkills] = useState([]);
+  const [specialization, setSpecialization] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -65,16 +67,16 @@ const ProfileSetUp = () => {
     });
   };
 
-  const [personName, setPersonName] = useState([]);
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    setPersonName(
+    setSkills(
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value,
     );
+    console.log(skills)
   };
 
   return (
@@ -98,12 +100,13 @@ const ProfileSetUp = () => {
             <Grid container spacing={2} >
               <Grid item xs={12} >
                 <TextField
-                  autoComplete="given-name"
-                  name="firstName"
+                  autoComplete="project-idea"
+                  name="projectIdea"
                   fullWidth
-                  id="firstName"
+                  id="projectIdea"
                   label="Project Idea"
                   autoFocus
+                  onChange={(e) => setProjectIdea(e.target.value)}
                   sx={{ bgcolor: 'white' }}
                 />
               </Grid>
@@ -114,7 +117,7 @@ const ProfileSetUp = () => {
                   labelId="demo-multiple-chip-label"
                   id="demo-multiple-chip"
                   multiple
-                  value={personName}
+                  value={skills}
                   sx={{ minWidth: 400 }}
                   onChange={handleChange}
                   input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
@@ -127,13 +130,12 @@ const ProfileSetUp = () => {
                   )}
                   MenuProps={MenuProps}
                 >
-                  {skills.map((name) => (
+                  {options.map((skill) => (
                     <MenuItem
-                      key={name}
-                      value={name}
-                    // style={getStyles(name, personName, theme)}
+                      key={skill}
+                      value={skill}
                     >
-                      {name}
+                      {skill}
                     </MenuItem>
                   ))}
                 </Select>
