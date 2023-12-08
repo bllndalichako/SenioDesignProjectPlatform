@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-import MenuItem from '@mui/material/MenuItem';
 
 const accessTypes = [
   {
@@ -44,7 +43,7 @@ const SignUp = () => {
           }}
         >
           <Typography component="h1" variant="h4" sx={{ color: '#2a3447' }}>
-            Sign up
+            Sign Up
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2} >
@@ -139,7 +138,7 @@ const SignUp = () => {
             </Grid>
             <Grid container justifyContent="flex-end" >
               <Grid item>
-                <Link href="#" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
+                <Link href="login" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
                   Already have an account? Sign in
                 </Link>
               </Grid>
