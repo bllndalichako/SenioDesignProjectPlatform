@@ -32,10 +32,10 @@ const seniorSchema = mongoose.Schema(
       type: String,
       required: false,
     },
-    skills: {
-      type: [String],
+    skills: [{
+      type: String,
       required: true,
-    },
+    }],
     projectIdea: {
       type: String,
       required: false,

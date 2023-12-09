@@ -153,6 +153,31 @@ app.post('/api/logout', async (req, res) => {
   }
 });
 
+app.put('/api/update-profile', async (req, res) => {
+  try {
+    const { email, accessType, projectIdea, skills, specialization } = req.body;
+    if (accessType === 'student') {
+      const student = await Senior.findOne({ email });
+      student.projectIdea = projectIdea;
+      student.skills = skills;
+      await student.save();
+      console.log(student);
+      res.status(200).json({ message: 'Student profile setup successful' });
+    } else if (accessType === 'advisor') {
+      const advisor = await Advisor.findOne({ email });
+      advisor.proposedProject = projectIdea;
+      advisor.specialization = specialization;
+      await advisor.save();
+      console.log(advisor);
+      res.status(200).json({ message: 'Advisor profile setup successful' });
+    } else {
+      res.status(400).json({ message: 'User is neither a student or an advisor.' });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+
 connectDB();
 
 app.listen(PORT, () => {

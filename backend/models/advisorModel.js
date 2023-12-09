@@ -30,16 +30,16 @@ const advisorSchema = mongoose.Schema(
       type: String,
       default: 'advisor',
     },
-    advisingTeams: {
-      type: [String],
+    advisingTeams: [{
+      type: String,
+      required: false,
+    }],
+    specialization: {
+      type: String,
       required: false,
     },
-    researchInterests: {
-      type: [String],
-      required: true,
-    },
-    proposedProjects: {
-      type: [String],
+    proposedProject: {
+      type: String,
       required: false,
     },
   },

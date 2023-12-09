@@ -78,27 +78,25 @@ const verifyRegistration = asyncHandler(async (req, res) => {
       if (registeredUser.verification === verificationCode) {
 
         // Create user.
+        const verifiedStudent = await Senior.findOne({ email: email });
+        const verifiedAdvisor = await Advisor.findOne({ email: email });
+
+        if (verifiedStudent || verifiedAdvisor) {
+          res.status(100).json({ message: "User already registered. Login instead." });
+          console.log("User already registered. Login instead.");
+          return;
+        }
+
         const user = accessType === "student" ? await Senior.create({ firstName, lastName, email, password }) : await Advisor.create({ firstName, lastName, email, password });
 
         console.log(user);
-        res.status(200).send({ message: "User successfully registered." });
-        // // Confirm user was created, and return created user.
-        // if (user) {
-        //   generateToken(res, user);
-
-        //   res.status(201).json(user).send({ message: "User successfully registered." });
-        // } else {
-        //   res.status(400).send({ message: "User was not registered." });
-        //   // throw new Error('User not created. Invalid user data.');
-        // }
+        res.status(200).json({ message: "User successfully verified." });
       } else {
-        res.status(400).send({ message: "User verification failed." });
-        return;
+        res.status(400).json({ message: "User verification failed." });
       }
     }
     else {
       res.status(400).send({ message: "User not registered." });
-      return;
     }
   } catch (error) {
     console.log(error.message);

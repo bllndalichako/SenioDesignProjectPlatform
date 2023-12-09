@@ -13,6 +13,10 @@ import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useAuth } from '../../context/AuthProvider';
 
 const options = [
   'JavaScript',
@@ -57,14 +61,34 @@ const ProfileSetUp = () => {
   const [projectIdea, setProjectIdea] = useState('');
   const [skills, setSkills] = useState([]);
   const [specialization, setSpecialization] = useState('');
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    try {
+      console.log("Skills state data type: ",typeof skills);
+      console.log("Skills state: ",skills);
+
+      const profileSetUpRes = await axios.put('http://localhost:5555/api/update-profile', {
+        email: user.email,
+        accessType: user.accessType,
+        projectIdea,
+        skills,
+        specialization,
+      });
+
+      console.log(profileSetUpRes.data.message);
+      if (profileSetUpRes.status === 200) {
+        toast.success(profileSetUpRes.data.message);
+        navigate('/');
+      } else {
+        toast.error(profileSetUpRes.data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
 
@@ -110,54 +134,66 @@ const ProfileSetUp = () => {
                   sx={{ bgcolor: 'white' }}
                 />
               </Grid>
+              {user.accessType === 'advisor' ? 
+              <Grid item xs={12} >
+                <TextField
+                  autoComplete="specialization"
+                  name="specialization"
+                  fullWidth
+                  id="specialization"
+                  label="Specialization"
+                  onChange={(e) => setSpecialization(e.target.value)}
+                  sx={{ bgcolor: 'white' }}
+                />
+              </Grid> :
               <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" >
                 <FormControl sx={{ m: 1 }} required>
-                <InputLabel id="demo-multiple-chip-label">Skills</InputLabel>
-                <Select
-                  labelId="demo-multiple-chip-label"
-                  id="demo-multiple-chip"
-                  multiple
-                  value={skills}
-                  sx={{ minWidth: 400 }}
-                  onChange={handleChange}
-                  input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                  renderValue={(selected) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                      {selected.map((value) => (
-                        <Chip key={value} label={value} />
-                      ))}
-                    </Box>
-                  )}
-                  MenuProps={MenuProps}
-                >
-                  {options.map((skill) => (
-                    <MenuItem
-                      key={skill}
-                      value={skill}
-                    >
-                      {skill}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                  <InputLabel id="demo-multiple-chip-label">Skills</InputLabel>
+                  <Select
+                    labelId="demo-multiple-chip-label"
+                    id="demo-multiple-chip"
+                    multiple
+                    value={skills}
+                    sx={{ minWidth: 400 }}
+                    onChange={handleChange}
+                    input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                    renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((value) => (
+                          <Chip key={value} label={value} />
+                        ))}
+                      </Box>
+                    )}
+                    MenuProps={MenuProps}
+                  >
+                    {options.map((skill) => (
+                      <MenuItem
+                        key={skill}
+                        value={skill}
+                      >
+                        {skill}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid> }
             </Grid>
-          </Grid>
-          <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" >
-            <Button
-              type="submit"
-              variant="contained"
-              size='large'
-              display='flex'
-              justifyContent="center" alignItems="center"
-              sx={{ mt: 3, mb: 2, bgcolor: '#2a3447', color: 'white' }}
-            >
-              Complete Setup
-            </Button>
-          </Grid>
+            <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" >
+              <Button
+                type="submit"
+                variant="contained"
+                size='large'
+                display='flex'
+                justifyContent="center" alignItems="center"
+                sx={{ mt: 3, mb: 2, bgcolor: '#2a3447', color: 'white' }}
+              >
+                Complete Setup
+              </Button>
+            </Grid>
+          </Box>
         </Box>
-      </Box>
-    </Container>
-    </div >
+      </Container>
+    </div>
   );
 }
 

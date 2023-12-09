@@ -9,11 +9,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-
+import { useAuth } from '../../context/AuthProvider';
 
 const Verification = ({ fName, lName, uflEmail, pass, role }) => {
   const navigate = useNavigate();
   const [verificationCode, setVerificationCode] = useState('');
+  const { storeRegisteredEmail, login } = useAuth();
 
   const handleSubmit = async (event) => {
     console.log("In handleSubmit");
@@ -30,8 +31,16 @@ const Verification = ({ fName, lName, uflEmail, pass, role }) => {
 
       console.log(verificationRes);
       if (verificationRes.status === 200) {
-        toast.success('Registration verified.');
+        // console.log("In verificationRes.status === 200")
+        storeRegisteredEmail(uflEmail);
+        const loginRes = await login(uflEmail, pass);
+        console.log(loginRes);
+        toast.success(verificationRes.data.message);
         navigate('/profile-setup');
+      } else if (verificationRes.status === 100) {
+        // console.log("In verificationRes.status === 100")
+        toast.error(verificationRes.data.message);
+        navigate('/login');
       }
     } catch (error) {
       console.log(error.message);
