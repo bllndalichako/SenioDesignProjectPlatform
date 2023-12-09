@@ -20,6 +20,7 @@ import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 
 
 const RouteProtection = ({ element, ...rest }) => {
@@ -100,8 +101,12 @@ function App() {
       element: <Login />,
     },
     {
-      path: "/reset-password",
+      path: "/reset-password/:token",
       element: <ResetPassword />,
+    },
+    {
+      path: "/forgot-password",
+      element: <ForgotPassword />,
     },
     {
       path: "/verify",

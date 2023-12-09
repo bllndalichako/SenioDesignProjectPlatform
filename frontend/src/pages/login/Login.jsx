@@ -94,7 +94,7 @@ const Login = () => {
             </Grid>
             <Grid container justifyContent="flex-end" >
               <Grid item>
-                <Link href="reset-password" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
+                <Link href="forgot-password" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
                  Forgot Password? Reset Password
                 </Link>
               </Grid>

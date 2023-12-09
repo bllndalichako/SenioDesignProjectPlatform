@@ -12,7 +12,9 @@ import expressSession from 'express-session';
 import connectMongoDBSession from 'connect-mongodb-session';
 import bodyParser from 'body-parser';
 import { passportInit } from './middleware/authMiddleware.js';
-
+import { Advisor } from './models/advisorModel.js';
+import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 
 dotenv.config();
 const app = express();
@@ -83,6 +85,55 @@ app.get('/api/auth', (req, res) => {
     res.status(401).json({ authenticated: false, user: null });
   }
 })
+
+app.post('/api/forgot-password', async (req, res) => {
+  try {
+    console.log("In forgot password route");
+    const { email } = req.body;
+    const advisor = await Advisor.findOne({ email });
+    const student = await Senior.findOne({ email });
+    const user = advisor || student;
+
+    if (!user) {
+      return res.status(404).send({ message: 'Email address does not exist.' });
+    }
+
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '20m' });
+
+    const transporter = nodemailer.createTransport(
+      {
+        service: 'Gmail',
+        auth: {
+          user: 'seniordesignprojectplatform@gmail.com',
+          pass: process.env.GMAIL_PASSWORD
+        }
+      }
+    );
+
+    const mailOptions = {
+      from: 'seniordesignprojectplatform@gmail.com',
+      to: email,
+      subject: 'Reset Password Link',
+      text: `Click on this link to reset your password: http://localhost:5173/reset-password/${token}`,
+    };
+
+    transporter.sendMail(mailOptions, (err, response) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send({ message: 'Error sending email.' });
+      } else {
+        console.log('Email sent: ' + response.response);
+        return res.status(200).send({ message: 'Password reset email sent.' });
+      }
+    });
+
+    console.log(req.body);
+    res.status(200).json({ message: 'Password reset email sent.' });
+
+  } catch (error) {
+    console.log(error.message);
+  }
+});
 
 connectDB();
 

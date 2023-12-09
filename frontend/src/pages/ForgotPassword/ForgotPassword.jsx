@@ -8,17 +8,24 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-const ResetPassword = () => {
+const ForgotPassword = () => {
   const [email, setEmail] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+    console.log("Clicked reset password button.")
     try {
-      const resetPasswordRes = await axios.post('http://localhost:5555/api/forgot-password', { email });
+      const forgotPasswordRes = await axios.post('http://localhost:5555/api/forgot-password', { email });
 
-
+      console.log("Waiting for forgot password response...");
+      if (forgotPasswordRes.status === 200) {
+        toast.success('Password reset email sent.');
+        navigate('/login');
+      }
     } catch (error) {
       console.log(error.message);
     }
@@ -39,7 +46,7 @@ const ResetPassword = () => {
           }}
         >
           <Typography component="h1" variant="h4" sx={{ color: '#2a3447' }}>
-            Reset Password
+            Forgot Password
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, minWidth: 400 }}>
             <Grid container spacing={2}>
@@ -64,8 +71,15 @@ const ResetPassword = () => {
                 justifyContent="center" alignItems="center"
                 sx={{ mt: 3, mb: 2, bgcolor: '#2a3447', color: 'white' }}
               >
-                Complete Password Reset
+                Reset Password
               </Button>
+            </Grid>
+            <Grid container justifyContent="flex-end" >
+              <Grid item>
+                <Link href="login" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
+                  Remember password? Sign in
+                </Link>
+              </Grid>
             </Grid>
           </Box>
         </Box>
@@ -74,4 +88,4 @@ const ResetPassword = () => {
   );
 }
 
-export default ResetPassword;
+export default ForgotPassword;
