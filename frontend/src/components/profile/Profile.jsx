@@ -1,20 +1,14 @@
-// import { deepOrange } from '@mui/material/colors';
-import { useState } from "react";
-// import { Avatar } from "@mui/material";
-// import { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import Avatar from "@mui/material/Avatar";
-// import "./profile.scss";
-// import axios from "axios";
-// import { deepOrange } from '@mui/material/colors';
-// import { useLogoutMutation } from "../../slices/usersApiSlice";
-// import { logout } from "../../slices/authSlice";
-// import { useDispatch } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-
+import { deepOrange } from '@mui/material/colors';
+import { Avatar } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import "./Profile.scss";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthProvider";
 
 const Profile = () => {
-  const [user, setUser] = useState({});
+  const { user } = useAuth();
 
   const handleLogout = async () => {
     // try {
@@ -40,10 +34,10 @@ const Profile = () => {
             {/* </Avatar> */}
             <div className="identifiers">
               <h1>
-                Beatrice Laurent
+                {user.firstName} {user.lastName}
               </h1>
               <div className="role">
-                <span className="role">Student</span>
+                <span className="role">{ user.accessType.charAt(0).toUpperCase() + user.accessType.slice(1) }</span>
               </div>
             </div>
             <button onClick={handleLogout}>Logout</button>

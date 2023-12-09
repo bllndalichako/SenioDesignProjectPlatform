@@ -1,6 +1,9 @@
 import "./Navbar.scss"
+import { useAuth } from "../../context/AuthProvider";
 
 const Navbar = () => {
+  const { user } = useAuth();
+
   return (
     <div className="navbar">
       <div className="logo">
@@ -13,7 +16,7 @@ const Navbar = () => {
           <span>1</span>
         </div>
         <div className="user">
-          <span>John Doe</span>
+          <span> {user.firstName} {user.lastName} </span>
           <img src="/user.svg" alt="" className="icon" />
         </div>
       </div>
