@@ -31,8 +31,8 @@ const advisorSchema = mongoose.Schema(
       default: 'advisor',
     },
     advisingTeams: [{
-      type: String,
-      required: false,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Team',
     }],
     specialization: {
       type: String,

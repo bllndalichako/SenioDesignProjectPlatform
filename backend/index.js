@@ -178,6 +178,63 @@ app.put('/api/update-profile', async (req, res) => {
   }
 });
 
+app.get('/api/get-advisors', async (req, res) => {
+  try {
+    const advisors = await Advisor.find({});
+
+    if (!advisors) {
+      res.status(404).json({ message: 'No advisors have registered on the platform yet.' });
+    } else {
+      res.status(200).json({ advisors });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+
+app.post('/api/request-advisor', async (req, res) => {
+  const { student, advisor } = req.body;
+
+  try {
+    const transporter = nodemailer.createTransport(
+      {
+        service: 'Gmail',
+        auth: {
+          user: 'seniordesignprojectplatform@gmail.com',
+          pass: process.env.GMAIL_PASSWORD
+        }
+
+      }
+    );
+
+    const mailOptions = {
+      from: 'seniordesignprojectplatform@gmail.com',
+      to: advisor.email,
+      subject: 'Senior Design Project: Advisor Request from team ' + student.team.name,
+      text: `Team name: ${student.team.name}\n
+      Project description: ${student.team.projectDescription}\n
+      Team members: ${student.team.members}\n
+      Coding languages: ${student.team.codingLanguages}\n
+      Tools, packages, and frameworks: ${student.team.toolsPackagesFrameworks}\n\n\n
+      Login to the platform to accept or reject the request: http://localhost:5173/login`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      // console.log("In transporter.sendMail")
+      if (error) {
+        console.error(error);
+        res.status(500).json({message: 'Failed to send request'})
+      } else {
+        console.log('Email sent: ' + info.response);
+        res.status(200).json({message: 'Request sent successfully'});
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 connectDB();
 
 app.listen(PORT, () => {

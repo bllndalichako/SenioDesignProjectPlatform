@@ -3,6 +3,10 @@ import "./DataTable.scss";
 import { Link } from "react-router-dom";
 // import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { useAuth } from "../../context/AuthProvider";
 
 // type Props = {
 //   columns: GridColDef[];
@@ -12,8 +16,43 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 // };
 
 const DataTable = (props) => {
-  const sendRequestEmail = (to) => {
-    //send email to user with id in args
+  const { user } = useAuth();
+
+  const requestAdvisor = async (advisorInfo) => {
+    try {
+      const requestAdvisorRes = await axios.post("http://localhost:5555/api/request-advisor", {
+        student: user,
+        advisor: advisorInfo,
+      });
+
+      if (requestAdvisorRes.status === 200) {
+        toast.success(requestAdvisorRes.data.message);
+      } else {
+        toast.error(requestAdvisorRes.data.message);
+      }
+      console.log("Requesting advisor: ", advisorInfo);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleRequest = (advisorInfo) => {
+    if (!user.team) {
+      toast.error("Must form a team before requesting an advisor.");
+      return;
+    }
+
+    if (!user.isProjectLead) {
+      toast.error("Must be project lead to request an advisor.");
+      return;
+    }
+
+    if (user.team?.advisor) {
+      toast.error("Team already has an advisor: ", user.team.advisor.firstName, " ", user.team.advisor.lastName);
+      return;
+    }
+
+    requestAdvisor(advisorInfo);
   };
 
   const profileColumn = {
@@ -75,12 +114,21 @@ const DataTable = (props) => {
   };
 
   const projectIdeasColumn = {
-      field: "projectIdeas",
+      field: "proposedProject",
       type: "string", // TODO: Change to int
-      headerName: "Project Ideas",
+      headerName: "Project Idea",
       width: 150,
       sortable: false,
       hideable: false,
+  };
+
+  const specializationColumn = {
+    field: "specialization",
+    type: "string",
+    headerName: "Specialization",
+    width: 150,
+    sortable: false,
+    hideable: false,
   };
 
   const requestColumn = {
@@ -92,27 +140,27 @@ const DataTable = (props) => {
     hideable: false,
     filterable: false,
 
-    // TODO: Replace delete icon with message icon
-    // TODO: Render a random avatar if no image is provided
-    // TODO: Align center the icon
     renderCell: (params) => {
       return (
         <div
           className="request"
-          onClick={() => sendRequestEmail(params.row.id)}
+          onClick={() => handleRequest(params.row)}
         >
           <img src="/paperPlane.svg" alt="" />
         </div>
       );
     },
   };
-  // TODO: Remove selector in first column
+
+  // TODO: Link to user profile on click
+  // TODO: Display initials on profile picture
+  // TODO: Popup modal and send request email on click
   return (
     <div className="dataTable">
       <DataGrid
         className="dataGrid"
         rows={props.rows}
-        columns={[profileColumn, firstNameColumn, lastNameColumn, ...props.columns, projectIdeasColumn, requestColumn]}
+        columns={[profileColumn, firstNameColumn, lastNameColumn, projectIdeasColumn, specializationColumn, requestColumn]}
         initialState={{
           pagination: {
             paginationModel: {
@@ -129,7 +177,7 @@ const DataTable = (props) => {
           },
         }}
         pageSizeOptions={[5]}
-        checkboxSelection
+        // checkboxSelection
         disableRowSelectionOnClick
         disableDensitySelector
         disableColumnSelector

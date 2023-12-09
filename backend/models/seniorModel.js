@@ -29,8 +29,8 @@ const seniorSchema = mongoose.Schema(
       default: false,
     },
     team: {
-      type: String,
-      required: false,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Team',
     },
     skills: [{
       type: String,
