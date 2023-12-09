@@ -23,8 +23,10 @@ const ForgotPassword = () => {
 
       console.log("Waiting for forgot password response...");
       if (forgotPasswordRes.status === 200) {
-        toast.success('Password reset email sent.');
-        navigate('/login');
+        navigate(`/reset-password/${forgotPasswordRes.data.token}`);
+        toast.success('Reset password before token expires in 10 minutes.');
+      } else {
+        toast.error(forgotPasswordRes.data.message);
       }
     } catch (error) {
       console.log(error.message);
@@ -76,7 +78,7 @@ const ForgotPassword = () => {
             </Grid>
             <Grid container justifyContent="flex-end" >
               <Grid item>
-                <Link href="login" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
+                <Link href="/login" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
                   Remember password? Sign in
                 </Link>
               </Grid>

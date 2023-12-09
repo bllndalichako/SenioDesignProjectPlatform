@@ -98,37 +98,42 @@ app.post('/api/forgot-password', async (req, res) => {
       return res.status(404).send({ message: 'Email address does not exist.' });
     }
 
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '20m' });
-
-    const transporter = nodemailer.createTransport(
-      {
-        service: 'Gmail',
-        auth: {
-          user: 'seniordesignprojectplatform@gmail.com',
-          pass: process.env.GMAIL_PASSWORD
-        }
-      }
-    );
-
-    const mailOptions = {
-      from: 'seniordesignprojectplatform@gmail.com',
-      to: email,
-      subject: 'Reset Password Link',
-      text: `Click on this link to reset your password: http://localhost:5173/reset-password/${token}`,
-    };
-
-    transporter.sendMail(mailOptions, (err, response) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).send({ message: 'Error sending email.' });
-      } else {
-        console.log('Email sent: ' + response.response);
-        return res.status(200).send({ message: 'Password reset email sent.' });
-      }
-    });
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '10m' });
 
     console.log(req.body);
-    res.status(200).json({ message: 'Password reset email sent.' });
+    res.status(200).json({ message: 'Password reset email sent.', token });
+
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+
+app.post('/api/reset-password/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    if (!token) {
+      return res.status(400).send({ message: 'No token found.' });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+      if (err) {
+        console.log(err);
+        return res.status(401).send({ message: 'Token expired.' });
+      }
+
+      const user = await Advisor.findOne({ _id: decodedToken._id }) || await Senior.findOne({ _id: decodedToken._id });
+
+      if (!user) {
+        return res.status(404).send({ message: 'User does not exist.' });
+      }
+
+      user.password = password;
+      await user.save();
+
+      return res.status(200).send({ message: 'Password reset successful.' });
+    });
 
   } catch (error) {
     console.log(error.message);

@@ -202,7 +202,7 @@ const SignUp = () => {
               </Grid>
               <Grid container justifyContent="flex-end" >
                 <Grid item>
-                  <Link href="login" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
+                  <Link href="/login" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
                     Already have an account? Sign in
                   </Link>
                 </Grid>

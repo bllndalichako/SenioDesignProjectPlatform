@@ -87,14 +87,14 @@ const Login = () => {
             </Grid>
             <Grid container justifyContent="flex-end" >
               <Grid item>
-                <Link href="register" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
+                <Link href="/register" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
                   Don't have an account? Sign Up
                 </Link>
               </Grid>
             </Grid>
             <Grid container justifyContent="flex-end" >
               <Grid item>
-                <Link href="forgot-password" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
+                <Link href="/forgot-password" variant="body2" sx={{ color: '#2a3447' }} underline="hover">
                  Forgot Password? Reset Password
                 </Link>
               </Grid>
