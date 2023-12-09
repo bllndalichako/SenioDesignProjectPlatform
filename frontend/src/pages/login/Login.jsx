@@ -22,6 +22,7 @@ const Login = () => {
     event.preventDefault();
     try {
       const loginRes = await login(email, password);
+      toast.success('Login successful!');
       console.log(loginRes);
       navigate('/');
     } catch (error) {

@@ -15,9 +15,24 @@ import Profile from "./components/profile/Profile";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import Verification from "./pages/Verification/Verification";
 import ProfileSetUp from "./pages/ProfileSetUp/ProfileSetUp";
-
+import { useAuth } from "./context/AuthProvider";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import React from "react";
+import { Navigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+
+
+const RouteProtection = ({ element, ...rest }) => {
+  const { authenticated } = useAuth();
+  authenticated ? toast.success('User is authenticated!') : toast.error('Please login to continue.');
+
+  return authenticated ? (
+    element
+  ) :
+    (
+      <Navigate to="/login" replace={true} />
+    );
+}
 
 function App() {
   const Layout = () => {
@@ -40,7 +55,7 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Layout />,
+      element: <RouteProtection element={<Layout />} />,
       children: [
         {
           path: "/",
@@ -94,14 +109,14 @@ function App() {
     },
     {
       path: "/profile-setup",
-      element: <ProfileSetUp />,
+      element: <RouteProtection element={<ProfileSetUp />} />,
     },
   ]);
 
   return (
-      <React.StrictMode>
-        <RouterProvider router={router} />
-      </React.StrictMode>
+    <React.StrictMode>
+      <RouterProvider router={router} />
+    </React.StrictMode>
   );
 }
 
