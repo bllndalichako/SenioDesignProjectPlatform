@@ -6,26 +6,27 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-
-const accessTypes = [
-  {
-    value: 'Advisor',
-    label: 'Advisor',
-  },
-  {
-    value: 'Student',
-    label: 'Student',
-  },
-];
+import { useState } from 'react';
+import { useAuth } from '../../context/AuthProvider'
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const handleSubmit = (event) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  // console.log(useAuth());
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    try {
+      const loginRes = await login(email, password);
+      console.log(loginRes);
+      navigate('/');
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -55,6 +56,7 @@ const Login = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -66,6 +68,7 @@ const Login = () => {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </Grid>
             </Grid>
