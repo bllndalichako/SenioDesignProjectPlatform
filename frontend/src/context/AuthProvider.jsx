@@ -32,12 +32,10 @@ export const AuthProvider = ({ children }) => {
               const user = await getUser.json();
               setUser(user.user);
             } else {
-              console.log('Does else print');
               setAuthenticated(false);
              
             }
           } catch (error) {
-            console.log('Does catch(error) print?')
             console.error(error);
             setAuthenticated(false);
             

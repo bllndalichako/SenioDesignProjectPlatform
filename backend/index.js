@@ -95,7 +95,7 @@ app.post('/api/forgot-password', async (req, res) => {
     const user = advisor || student;
 
     if (!user) {
-      return res.status(404).send({ message: 'Email address does not exist.' });
+      res.status(404).send({ message: 'Email address does not exist.' });
     }
 
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '10m' });
@@ -137,6 +137,19 @@ app.post('/api/reset-password/:token', async (req, res) => {
 
   } catch (error) {
     console.log(error.message);
+  }
+});
+
+app.post('/api/logout', async (req, res) => {
+  try {
+    if (req.isAuthenticated()) {
+      req.logout((err) => console.log(err));
+      res.status(200).json({ message: 'User logged out successfully' });
+    } else {
+      res.status(401).json({ message: 'You are not logged in' });
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 

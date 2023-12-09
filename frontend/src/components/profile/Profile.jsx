@@ -1,23 +1,23 @@
-import { deepOrange } from '@mui/material/colors';
 import { Avatar } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import "./Profile.scss";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider";
+import {toast} from "react-toastify";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    // try {
-    //   await logoutApiCall(null).unwrap();
-    //   dispatch(logout(null));
-    //   navigate("/login");
-    // } catch (err) {
-    //   console.log(err);
-    // }
+  const handleLogout = async (event) => {
+    event.preventDefault();
+
+    try {
+      await logout();
+      navigate("/login");
+      toast.success("User logged out successfully");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -25,13 +25,13 @@ const Profile = () => {
       <div className="view">
         <div className="info">
           <div className="topInfo">
-            {/* <Avatar
+            <Avatar
               className="profile-img"
-              sx={{ bgcolor: deepOrange[300], fontSize: "4.5rem" }}
-            > */}
-              {"Beatrice".charAt(0)}
-              {"Laurent".charAt(0)}
-            {/* </Avatar> */}
+              sx={{ bgcolor: "white", fontSize: "4.5rem", color: "#2a3447" }}
+            >
+              {user.firstName.charAt(0)}
+              {user.lastName.charAt(0)}
+            </Avatar>
             <div className="identifiers">
               <h1>
                 {user.firstName} {user.lastName}
